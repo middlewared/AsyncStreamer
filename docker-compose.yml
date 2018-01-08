@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+    db:
+      image: mongo
+      volumes:
+        - ./data:/data/db
+    app:
+      build:
+        context: ./AsyncStreamPipeline
+      ports:
+        - "8080:8080"
+        - "9000:9000"
+        - "16000:16000"
+        - "17000:17000"
+    server:
+      build:
+        context: ./LocalAsyncStreamPipelineServer
+      ports:
+        - "15000:15000"
+        - "15001:15001"
