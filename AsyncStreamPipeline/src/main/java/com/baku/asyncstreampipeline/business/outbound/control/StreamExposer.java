@@ -22,6 +22,9 @@ public class StreamExposer {
     private boolean streaming;
 
     public void putMessageOnOutgoingQueue(List<String> mergedMessagesFromDb) {
+        if (mergedMessagesFromDb == null || mergedMessagesFromDb.isEmpty()) {
+            return;
+        }
         mergedMessagesFromDb.stream().forEach((message) -> {
             concurrentLinkedQueue.offer(message);
         });

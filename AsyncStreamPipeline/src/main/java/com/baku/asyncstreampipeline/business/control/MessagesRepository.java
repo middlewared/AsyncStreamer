@@ -25,14 +25,12 @@ public class MessagesRepository {
     }
 
     private void writeMessageToDb(JSONObject xmlJSONObj) {
-        MongoDatabase db = dbClientProvider.getMongoClient().getDatabase("persistent_queue");
-        MongoCollection<Document> mongoCollection = db.getCollection("messages");
+        MongoCollection<Document> mongoCollection = getDbCollection();
         mongoCollection.insertOne(Document.parse(xmlJSONObj.toString()));
     }
 
     public List<Document> getUnsentMessagesOrderedByTimestamp() {
-        MongoDatabase db = dbClientProvider.getMongoClient().getDatabase("persistent_queue");
-        MongoCollection<Document> mongoCollection = db.getCollection("messages");
+        MongoCollection<Document> mongoCollection = getDbCollection();
         FindIterable<Document> sortedMongoCollection = mongoCollection.find().sort(new BasicDBObject("timestamp", 1));
         MongoCursor<Document> iterator = sortedMongoCollection.iterator();
 
@@ -42,5 +40,11 @@ public class MessagesRepository {
         }
 
         return sortedMessages;
+    }
+
+    private MongoCollection<Document> getDbCollection() {
+        MongoDatabase db = dbClientProvider.getMongoClient().getDatabase("persistent_queue");
+        MongoCollection<Document> mongoCollection = db.getCollection("messages");
+        return mongoCollection;
     }
 }
